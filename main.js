@@ -1,46 +1,60 @@
 const express = require('express'),
-	app = express(),
-	homeController = require('./controllers/homeController'),
-	errorController = require('./controllers/errorController');
+  app = express(),
+  homeController = require('./controllers/homeController'),
+  errorController = require('./controllers/errorController');
 
-// Load Mongodb module
-const MongoDB = require('mongodb').MongoClient,
-	dbURL = 'mongodb://localhost:27017',
-	dbName = 'recipe_db';
+// load mongoose
+const mongoose = require('mongoose');
 
-// set up db connection locally
-MongoDB.connect(
-	dbURL,
-	{
-		useUnifiedTopology: true,
-	},
-	(error, client) => {
-		if (error) throw error;
-		// get recipe_db by Mongodb server
-		let db = client.db(dbName);
-
-		// insert a new item
-		db.collection('contacts').insert(
-			{
-				name: 'Hiroto',
-				age: 37,
-				note: 'Big brother',
-			},
-			(error, item) => {
-				if (error) throw error;
-				console.log(item);
-			},
-		);
-
-		// get all records from contacts collection
-		db.collection('contacts')
-			.find()
-			.toArray((error, data) => {
-				if (error) throw error;
-				console.log(data);
-			});
-	},
+// set up db connection
+mongoose.connect(
+  "mongodb://localhost:27017/recipe_db", {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  }
 );
+const db = mongoose.connection;
+db.once("open", () => {
+  console.log("Successfully connected to MongoDB using mongoose!");
+});
+// // Load Mongodb module
+// const MongoDB = require('mongodb').MongoClient,
+// 	dbURL = 'mongodb://localhost:27017',
+// 	dbName = 'recipe_db';
+
+// // set up db connection locally
+// MongoDB.connect(
+// 	dbURL,
+// 	{
+// 		useUnifiedTopology: true,
+// 	},
+// 	(error, client) => {
+// 		if (error) throw error;
+// 		// get recipe_db by Mongodb server
+// 		let db = client.db(dbName);
+
+// 		// insert a new item
+// 		db.collection('contacts').insert(
+// 			{
+// 				name: 'Hiroto',
+// 				age: 37,
+// 				note: 'Big brother',
+// 			},
+// 			(error, item) => {
+// 				if (error) throw error;
+// 				console.log(item);
+// 			},
+// 		);
+
+// 		// get all records from contacts collection
+// 		db.collection('contacts')
+// 			.find()
+// 			.toArray((error, data) => {
+// 				if (error) throw error;
+// 				console.log(data);
+// 			});
+// 	},
+// );
 
 // load express-ejs-layouts, set the layout module to the app
 const layout = require('express-ejs-layouts');
@@ -52,9 +66,9 @@ app.use(express.static('public'));
 
 // middleware
 app.use(
-	express.urlencoded({
-		extended: false,
-	}),
+  express.urlencoded({
+    extended: false,
+  }),
 );
 app.use(express.json());
 
@@ -70,5 +84,5 @@ app.use(errorController.internalServerError);
 
 // listening port
 app.listen(app.get('port'), () => {
-	console.log(`Server running at http://localhost:${app.get('port')}`);
+  console.log(`Server running at http://localhost:${app.get('port')}`);
 });
