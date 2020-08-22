@@ -2,21 +2,22 @@
 const Subscriber = require('../models/subscriber');
 
 // get all subscribers data 
-exports.getAllSubscribers = (req, res, next) => {
-  Subscriber.find({}, (error, subscribers) => {
-    // pass error object to middleware
-    if (error) {
-      console.log(error);
-      next(error);
-    }
-    // set subscribers data got from MongoDB
-    console.log('log from subscribersController')
-    req.data = subscribers;
-    // continue to the next middleware
-    next();
-  });
+exports.getAllSubscribers = (req, res) => {
+  Subscriber.find({})
+    .exec()
+    .then(result => {
+      res.render("subscribers", {
+        subscribers: result
+      });
+    })
+    .catch(error => {
+      console.log(error.message);
+      return [];
+    })
+    .then(() => {
+      console.log('promise complete');
+    });
 };
-
 // rendering contact page
 exports.getSubscriptionPage = (req, res) => {
   res.render("contact")
@@ -30,12 +31,12 @@ exports.saveSubscriber = (req, res) => {
     zipCode: req.body.zipCode
   });
 
-  newSubscriber.save((error, result) => {
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    console.log(`Successfully saved a new subscriber: \n${result}`)
-    res.render('thanks');
-  });
+  newSubscriber.save()
+    .then(result => {
+      console.log(`Saved new subscriber: \n${result}`)
+      res.render("thanks");
+    })
+    .catch(error => {
+      if (error) res.send(error);
+    });
 };
