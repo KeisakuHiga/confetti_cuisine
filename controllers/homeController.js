@@ -20,10 +20,3 @@ exports.showCourses = (req, res) => {
     offeredCourses: courses
   });
 };
-exports.showSignUp = (req, res) => {
-  res.render('contact');
-};
-exports.postedSignUpForm = (req, res) => {
-  console.log(req.body)
-  res.render('thanks');
-};

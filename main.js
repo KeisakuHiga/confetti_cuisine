@@ -38,13 +38,13 @@ app.use(express.json());
 // make route
 app.get('/', homeController.index);
 app.get('/courses', homeController.showCourses);
-app.get('/contact', homeController.showSignUp);
+app.get('/contact', subscribersController.getSubscriptionPage);
+app.post('/subscribe', subscribersController.saveSubscriber);
 app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
   // log subscribers data from request object
   console.log(req.data);
   res.render("subscribers", { subscribers: req.data });
 });
-app.post('/contact', homeController.postedSignUpForm);
 
 // error handling for routes
 app.use(errorController.pageNotFoundError);
