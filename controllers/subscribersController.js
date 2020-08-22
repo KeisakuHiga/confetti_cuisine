@@ -31,12 +31,12 @@ exports.saveSubscriber = (req, res) => {
     zipCode: req.body.zipCode
   });
 
-  newSubscriber.save((error, result) => {
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    console.log(`Successfully saved a new subscriber: \n${result}`)
-    res.render('thanks');
-  });
+  newSubscriber.save()
+    .then(result => {
+      console.log(`Saved new subscriber: \n${result}`)
+      res.render("thanks");
+    })
+    .catch(error => {
+      if (error) res.send(error);
+    });
 };
