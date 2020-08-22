@@ -47,6 +47,19 @@ Subscriber.find({}, (error, allDocs) => {
   console.log("Here is all documents:\n", allDocs);
 })
 
+// create a query to get one document using findOne method
+var myQuery = Subscriber
+  .findOne({
+    name: "Jon Wexler"
+  })
+  .where("email", /wexler/)
+
+// execute the above query coping with the callback function
+myQuery.exec((error, data) => {
+  if (error) console.log(error);
+  if (data) console.log(data.email);
+});
+
 // load express-ejs-layouts, set the layout module to the app
 const layout = require('express-ejs-layouts');
 const e = require('express');
