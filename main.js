@@ -62,7 +62,6 @@ myQuery.exec((error, data) => {
 
 // load express-ejs-layouts, set the layout module to the app
 const layout = require('express-ejs-layouts');
-const e = require('express');
 app.set('view engine', 'ejs');
 app.use(layout);
 
