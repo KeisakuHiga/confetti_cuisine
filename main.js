@@ -42,7 +42,7 @@ app.get('/contact', homeController.showSignUp);
 app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
   // log subscribers data from request object
   console.log(req.data);
-  res.send(req.data);
+  res.render("subscribers", { subscribers: req.data });
 });
 app.post('/contact', homeController.postedSignUpForm);
 
