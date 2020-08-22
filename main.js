@@ -1,6 +1,7 @@
 const express = require('express'),
   app = express(),
   homeController = require('./controllers/homeController'),
+  subscribersController = require('./controllers/subscribersController'),
   errorController = require('./controllers/errorController');
 
 // load mongoose
@@ -16,48 +17,6 @@ mongoose.connect(
 const db = mongoose.connection;
 db.once("open", () => {
   console.log("Successfully connected to MongoDB using mongoose!");
-});
-
-const Subscriber = require('./models/subscriber');
-
-// create a new Subscriber object - part1 using 'new' and 'save' method
-var subscriber1 = new Subscriber({ // use 'new'
-  name: "iPhone 7",
-  email: "i7@apple.com"
-});
-subscriber1.save((error, savedDoc) => { // use 'save'
-  if (error) console.log(error);
-  console.log(savedDoc);
-});
-
-// create a new Subscriber object - part2 using 'create' method
-Subscriber.create({
-    name: "Michel Jordan",
-    email: "mj@mj.com"
-  },
-  (error, savedDoc) => {
-    if (error) console.log(error);
-    console.log(savedDoc);
-  }
-);
-
-// get all documents from Subscriber
-Subscriber.find({}, (error, allDocs) => {
-  if (error) console.log(error.stack);
-  console.log("Here is all documents:\n", allDocs);
-})
-
-// create a query to get one document using findOne method
-var myQuery = Subscriber
-  .findOne({
-    name: "Jon Wexler"
-  })
-  .where("email", /wexler/)
-
-// execute the above query coping with the callback function
-myQuery.exec((error, data) => {
-  if (error) console.log(error);
-  if (data) console.log(data.email);
 });
 
 // load express-ejs-layouts, set the layout module to the app
@@ -80,6 +39,11 @@ app.use(express.json());
 app.get('/', homeController.index);
 app.get('/courses', homeController.showCourses);
 app.get('/contact', homeController.showSignUp);
+app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
+  // log subscribers data from request object
+  console.log(req.data);
+  res.render("subscribers", { subscribers: req.data });
+});
 app.post('/contact', homeController.postedSignUpForm);
 
 // error handling for routes
