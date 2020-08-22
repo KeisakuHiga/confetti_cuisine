@@ -18,6 +18,15 @@ db.once("open", () => {
   console.log("Successfully connected to MongoDB using mongoose!");
 });
 
+// create a new schema of subscribers
+const subscriberSchema = mongoose.Schema({
+  name: String, // add schema property
+  email: String,
+  zipCode: Number
+});
+// adapt the above schema to Model, 1st argument: model name, 2nd argument: the defined schema
+const Subscriber = mongoose.model("Subscriber", subscriberSchema);
+
 // load express-ejs-layouts, set the layout module to the app
 const layout = require('express-ejs-layouts');
 app.set('view engine', 'ejs');
