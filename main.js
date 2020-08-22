@@ -1,6 +1,7 @@
 const express = require('express'),
   app = express(),
   homeController = require('./controllers/homeController'),
+  subscribersController = require('./controllers/subscribersController'),
   errorController = require('./controllers/errorController');
 
 // load mongoose
@@ -80,6 +81,11 @@ app.use(express.json());
 app.get('/', homeController.index);
 app.get('/courses', homeController.showCourses);
 app.get('/contact', homeController.showSignUp);
+app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
+  // log subscribers data from request object
+  console.log(req.data);
+  res.send(req.data);
+});
 app.post('/contact', homeController.postedSignUpForm);
 
 // error handling for routes
