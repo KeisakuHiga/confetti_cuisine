@@ -16,3 +16,26 @@ exports.getAllSubscribers = (req, res, next) => {
     next();
   });
 };
+
+// rendering contact page
+exports.getSubscriptionPage = (req, res) => {
+  res.render("contact")
+};
+// save posted subscribers' data from client form 
+exports.saveSubscriber = (req, res) => {
+  // create a new Subscriber object
+  let newSubscriber = new Subscriber({
+    name: req.body.name,
+    email: req.body.email,
+    zipCode: req.body.zipCode
+  });
+
+  newSubscriber.save((error, result) => {
+    if (error) {
+      console.log(error);
+      res.send(error);
+    }
+    console.log(`Successfully saved a new subscriber: \n${result}`)
+    res.render('thanks');
+  });
+};
