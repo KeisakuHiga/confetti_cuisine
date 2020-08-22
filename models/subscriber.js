@@ -17,7 +17,11 @@ const subscriberSchema = mongoose.Schema({
     type: Number,
     min: [1000000, 'Zip code too short'],
     max: 9999999
-  }
+  },
+  courses: [{ // array should be used when n/n relation
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course"
+  }]
 });
 
 // add instance methods to subscriberSchema
