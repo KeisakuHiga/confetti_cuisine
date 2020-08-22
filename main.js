@@ -7,6 +7,9 @@ const express = require('express'),
 // load mongoose
 const mongoose = require('mongoose');
 
+// tell mongoose to use ES6's native Promise
+mongoose.Promise = global.Promise;
+
 // set up db connection
 mongoose.connect(
   "mongodb://localhost:27017/recipe_db", {
