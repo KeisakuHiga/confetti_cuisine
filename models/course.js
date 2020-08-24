@@ -15,13 +15,11 @@ const courseSchema = mongoose.Schema({
     type: Number,
     min: [1000000, 'Zip code too short'],
     max: 999999
-  }
-  // you don't need to put subscribers property here
-  // because it is enough to set one side to have a relation between two models
-  // subscribers: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "Subscriber"
-  // }]
+  },
+  subscribers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Subscriber"
+  }]
 });
 
 module.exports = mongoose.model("Course", courseSchema);
