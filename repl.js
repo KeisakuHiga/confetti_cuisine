@@ -1,9 +1,11 @@
 const mongoose = require("mongoose"),
   Subscriber = require("./models/subscriber"),
-  Course = require("./models/course");
+  Course = require("./models/course"),
+  User = require('./models/user');
   
-var testCourse,
-  testSubscriber;
+var testCourse;
+var testSubscriber;
+var testUser;
 
 mongoose.connect(
   "mongodb://localhost:27017/recipe_db",
