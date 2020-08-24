@@ -1,74 +1,55 @@
 const mongoose = require("mongoose"),
   Subscriber = require("./models/subscriber"),
   Course = require("./models/course");
-const subscriber = require("./models/subscriber");
   
 var testCourse,
   testSubscriber;
 
 mongoose.connect(
   "mongodb://localhost:27017/recipe_db",
-  { useNewUrlParser: true }
+  { useNewUrlParser: true,
+    useUnifiedTopology: true}
 );
 
 mongoose.Promise = global.Promise;
 
 // copy codes from the book
-Subscriber.remove({})
-  .then(items => console.log(`Removed ${items.n} records!`))
-  .then(() => {
+Subscriber.remove({}).then(items => console.log(`Removed ${items.n} records!`)).then(() => {
     return Course.remove({});
-  })
-  .then(items => console.log(`Removed ${items.n} records!`))
-  // create new subscribers
-  .then(() => {
+  }).then(items => console.log(`Removed ${items.n} records!`)).then(() => {
     return Subscriber.create({
       name: "Jon",
       email: "jon@jonwexler.com",
       zipCode: 1234567
     });
-  })
-  .then(subscriber => {
+  }).then(subscriber => {
     console.log(`Created Subscriber: ${subscriber.getInfo()}`);
-  })
-  .then(() => {
+  }).then(() => {
     return Subscriber.findOne({
       name: "Jon"
     });
-  })
-  .then(subscriber => {
+  }).then(subscriber => {
     testSubscriber = subscriber;
     console.log(`Found one subscriber: ${subscriber.getInfo()}`);
-  })
-  // create a new course
-  .then(() => {
+  }).then(() => {
     return Course.create({
       title: "Tomato Land",
       description: "Locally farmed tomatoes only",
       zipCode: 1234567,
       items: ["cherry", "heirloom"]
     });
-  })
-  .then(course => {
+  }).then(course => {
     testCourse = course;
     console.log(`Created course: ${course.title}`);
-  })
-  // put reference between subscriber and course
-  .then(() => {
+  }).then(() => {
     testSubscriber.courses.push(testCourse);
     testSubscriber.save();
-  })
-  // write document course of the subscriber
-  .then(() => {
+  }).then(() => {
     return Subscriber.populate(testSubscriber, "course");
-  })
-  .then(subscriber => console.log(subscriber))
-  // make a query to check if the course ObjectID is match with the subscribers' one 
-  .then(() => {
+  }).then(subscriber => console.log(subscriber)).then(() => {
     return Subscriber.find(
       { courses: mongoose.Types.ObjectId(testCourse._id) });
-  })
-  .then(subscriber => console.log(subscriber));
+  }).then(subscriber => console.log(subscriber));
 // original // delete all contacts
 // Subscriber.deleteMany({})
 //   .then(result => console.log('Deleted all contacts')).catch(error => console.log(error.message))
