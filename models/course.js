@@ -14,7 +14,7 @@ const courseSchema = mongoose.Schema({
   zipCode: {
     type: Number,
     min: [1000000, 'Zip code too short'],
-    max: 999999
+    max: 9999999
   },
   subscribers: [{
     type: mongoose.Schema.Types.ObjectId,
