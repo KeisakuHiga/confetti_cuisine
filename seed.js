@@ -14,32 +14,32 @@ mongoose.connection;
 var contacts = [{
     name: "Keisaku",
     email: "keisaku@higa.com",
-    zipCode: 32
+    zipCode: 1234567
   },
   {
     name: "Hiroshi",
     email: "hiroshi@higa.com",
-    zipCode: 69
+    zipCode: 1234567
   },
   {
     name: "Keiko",
     email: "keiko@higa.com",
-    zipCode: 65
+    zipCode: 1234567
   },
   {
     name: "Mayumi",
     email: "mayumi@higa.com",
-    zipCode: 39
+    zipCode: 1234567
   },
   {
     name: "Hiroto",
     email: "hiroto@higa.com",
-    zipCode: 37
+    zipCode: 1234567
   },
   {
     name: "Nawo",
     email: "nawo@yogi.com",
-    zipCode: 95
+    zipCode: 1234567
   }
 ];
 
