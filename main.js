@@ -2,6 +2,8 @@ const express = require('express'),
   app = express(),
   homeController = require('./controllers/homeController'),
   subscribersController = require('./controllers/subscribersController'),
+  coursesController = require('./controllers/coursesController'),
+  usersController = require('./controllers/usersController'),
   errorController = require('./controllers/errorController');
 
 // load mongoose
@@ -42,6 +44,7 @@ app.use(express.json());
 app.get('/', homeController.index);
 app.get('/courses', homeController.showCourses);
 app.get('/contact', subscribersController.getSubscriptionPage);
+app.get('/users', usersController.index);
 app.post('/subscribe', subscribersController.saveSubscriber);
 app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
   // log subscribers data from request object

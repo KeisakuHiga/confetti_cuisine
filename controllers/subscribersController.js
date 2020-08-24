@@ -7,7 +7,7 @@ module.exports = {
     Subscriber.find({})
       .exec()
       .then(result => {
-        res.render("subscribers", {
+        res.render("subscribers/subscribers", {
           subscribers: result
         });
       })
@@ -21,7 +21,7 @@ module.exports = {
   },
   // rendering contact page
   getSubscriptionPage: (req, res) => {
-    res.render("contact")
+    res.render("subscribers/contact")
   },
   // save posted subscribers' data from client form 
   saveSubscriber: (req, res) => {
@@ -35,7 +35,7 @@ module.exports = {
     newSubscriber.save()
       .then(result => {
         console.log(`Saved new subscriber: \n${result}`)
-        res.render("thanks");
+        res.render("subscribers/thanks");
       })
       .catch(error => {
         if (error) res.send(error);
