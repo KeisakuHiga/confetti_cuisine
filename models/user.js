@@ -2,6 +2,7 @@ const mongoose = require('mongoose'),
   {
     Schema
   } = mongoose;
+const Subscriber = require('./subscriber');
 
 // create User schema
 const userSchema = new Schema({
@@ -48,4 +49,26 @@ userSchema.virtual("fullName")
     return `${this.name.first} ${this.name.last}`;
   });
 
+// set pre('save) hook
+userSchema.pre('save', function (next) {
+  let user = this;
+  // check if there is a subscriber who has the same email address with a new user
+  if (user.subscribedAccount === undefined) {
+    // query to find the subscriber
+    Subscriber.findOne({
+        email: user.email
+      })
+      .then(subscriber => {
+        user.subscribedAccount = subscriber;
+        next();
+      })
+      .catch(error => {
+        console.log(`Error in connecting subscriber: ${error.message}`);
+        next(error);
+      });
+  } else {
+    // the new user has the connection of a subscriber
+    next();
+  }
+});
 module.exports = mongoose.model("User", userSchema);
