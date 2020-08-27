@@ -1,5 +1,6 @@
 const express = require('express'),
   app = express(),
+  router = express.Router(),
   homeController = require('./controllers/homeController'),
   subscribersController = require('./controllers/subscribersController'),
   coursesController = require('./controllers/coursesController'),
@@ -41,16 +42,22 @@ app.use(
 app.use(express.json());
 
 // make route
-app.get('/', homeController.index);
-app.get('/courses', homeController.showCourses);
-app.get('/contact', subscribersController.getSubscriptionPage);
-app.get('/users', usersController.index, usersController.indexView);
-app.post('/subscribe', subscribersController.saveSubscriber);
-app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
+app.use('/', router);
+router.get('/', homeController.index);
+router.get('/courses', homeController.showCourses);
+router.get('/contact', subscribersController.getSubscriptionPage);
+router.post('/subscribe', subscribersController.saveSubscriber);
+router.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
   // log subscribers data from request object
   console.log(req.data);
-  res.render("subscribers", { subscribers: req.data });
+  res.render("subscribers", {
+    subscribers: req.data
+  });
 });
+router.get('/users', usersController.index, usersController.indexView);
+router.get('/users/:id', usersController.show, usersController.showView);
+router.get('/users/new', usersController.new);
+router.post('/users/create', usersController.create, usersController.redirectView);
 
 // error handling for routes
 app.use(errorController.pageNotFoundError);
