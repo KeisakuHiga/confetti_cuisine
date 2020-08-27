@@ -1,4 +1,5 @@
 const express = require('express'),
+  methodOverride = require('method-override'),
   app = express(),
   router = express.Router(),
   homeController = require('./controllers/homeController'),
@@ -43,6 +44,9 @@ app.use(express.json());
 
 // make route
 app.use('/', router);
+router.use(methodOverride("_method", {
+  methods: ["POST", "GET"]
+}));
 router.get('/', homeController.index);
 router.get('/courses', homeController.showCourses);
 router.get('/contact', subscribersController.getSubscriptionPage);
@@ -58,6 +62,8 @@ router.get('/users', usersController.index, usersController.indexView);
 router.get('/users/:id', usersController.show, usersController.showView);
 router.get('/users/new', usersController.new);
 router.post('/users/create', usersController.create, usersController.redirectView);
+router.get('/users/:id/edit', usersController.edit);
+router.put('/users/:id/update', usersController.update, usersController.redirectView);
 
 // error handling for routes
 app.use(errorController.pageNotFoundError);

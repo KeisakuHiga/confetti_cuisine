@@ -53,7 +53,7 @@ module.exports = {
     // query to find an user by userId
     User.findById(userId)
       .then(user => {
-        console.log('found user', user);
+        // console.log('found user', user);
         res.locals.user = user;
         next();
       })
@@ -62,8 +62,51 @@ module.exports = {
       });
   },
   showView: (req, res) => {
-    console.log('show view')
-    console.log(res.locals.user)
+    // console.log('show view')
+    // console.log(res.locals.user)
     res.render("users/show"); // path to show.ejs
+  },
+  edit: (req, res, next) => {
+    let userId = req.params.id;
+    // find a user by userId
+    User.findById(userId)
+      .then(user => {
+        // render the found users' data on edit page
+        res.render("users/edit", {
+          user: user
+        });
+      })
+      .catch(error => {
+        console.log(`Error fetching user by ID: ${error.message}`);
+        next(error);
+      });
+  },
+  update: (req, res, next) => {
+    let userId = req.params.id,
+      userParams = {
+        name: {
+          first: req.body.first,
+          last: req.body.last
+        },
+        email: req.body.email,
+        password: req.body.password,
+        zipCode: req.body.zipCode
+      };
+    // find a user and update the users' data
+    User.findByIdAndUpdate(userId, {
+        $set: userParams
+      })
+      .then(user => {
+        // console.log(`found user: ${user}`);
+        // add updated user data to a local variable
+        res.locals.redirect = `/users/${userId}`;
+        res.locals.user = user;
+        // call middleware
+        next();
+      })
+      .catch(error => {
+        console.log(`Error updating user by ID: ${error.message}`);
+        next(error);
+      })
   }
 }
