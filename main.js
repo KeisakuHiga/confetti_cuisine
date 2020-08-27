@@ -47,17 +47,14 @@ app.use('/', router);
 router.use(methodOverride("_method", {
   methods: ["POST", "GET"]
 }));
+// courses routes
 router.get('/', homeController.index);
 router.get('/courses', homeController.showCourses);
-router.get('/contact', subscribersController.getSubscriptionPage);
+// subscribers routes
+router.get('/subscribers', subscribersController.index, subscribersController.indexView);
+router.get('/subscribers/new', subscribersController.new);
 router.post('/subscribe', subscribersController.saveSubscriber);
-router.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
-  // log subscribers data from request object
-  console.log(req.data);
-  res.render("subscribers", {
-    subscribers: req.data
-  });
-});
+// users routes
 router.get('/users', usersController.index, usersController.indexView);
 router.get('/users/:id', usersController.show, usersController.showView);
 router.get('/users/new', usersController.new);
