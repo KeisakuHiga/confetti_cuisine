@@ -3,25 +3,23 @@ const Subscriber = require('../models/subscriber');
 
 module.exports = {
   // get all subscribers data 
-  getAllSubscribers: (req, res) => {
+  index: (req, res, next) => {
     Subscriber.find({})
-      .exec()
-      .then(result => {
-        res.render("subscribers/subscribers", {
-          subscribers: result
-        });
+      .then(subscribers => {
+        res.locals.subscribers = subscribers;
+        next();
       })
       .catch(error => {
-        console.log(error.message);
-        return [];
-      })
-      .then(() => {
-        console.log('promise complete');
+        console.log(`Error fetching subscribers: #${error.message}`);
+        next(error);
       });
   },
+  indexView: (req, res) => {
+    res.render("subscribers/index");
+  },
   // rendering contact page
-  getSubscriptionPage: (req, res) => {
-    res.render("subscribers/contact")
+  new: (req, res) => {
+    res.render("subscribers/new")
   },
   // save posted subscribers' data from client form 
   saveSubscriber: (req, res) => {
