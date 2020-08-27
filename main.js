@@ -52,8 +52,12 @@ router.get('/', homeController.index);
 router.get('/courses', homeController.showCourses);
 // subscribers routes
 router.get('/subscribers', subscribersController.index, subscribersController.indexView);
+router.get('/subscribers/:id', subscribersController.show, subscribersController.showView);
 router.get('/subscribers/new', subscribersController.new);
-router.post('/subscribe', subscribersController.saveSubscriber);
+router.post('/subscribers/create', subscribersController.create, subscribersController.redirectView);
+router.get('/subscribers/:id/edit', subscribersController.edit);
+router.put('/subscribers/:id/update', subscribersController.update, subscribersController.redirectView);
+router.delete('/subscribers/:id/delete', subscribersController.delete, subscribersController.redirectView);
 // users routes
 router.get('/users', usersController.index, usersController.indexView);
 router.get('/users/:id', usersController.show, usersController.showView);
