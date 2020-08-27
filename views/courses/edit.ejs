@@ -1,0 +1,12 @@
+<div class="data-form">
+  <form method="POST" action="<%= `/courses/${course._id}/update?_method=PUT` %>">
+    <h2>Update <%= course.title %> information:</h2>
+    <label for="inputTitle">Title</label>
+    <input type="text" name="title" id="inputTitle" value=<%= course.title %> autofocus>
+    <label for="inputDescription">Description</label>
+    <input type="text" name="description" id="inputDescription" value=<%= course.description %> required>
+    <label for="inputZipCode">Zip Code</label>
+    <input type="text" name="zipCode" id="inputZipCode" pattern="*" value=<%= course.zipCode %> required>
+    <button type="submit">Edit!</button>
+  </form>
+</div>
