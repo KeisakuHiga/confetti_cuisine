@@ -22,21 +22,97 @@ module.exports = {
     res.render("subscribers/new")
   },
   // save posted subscribers' data from client form 
-  saveSubscriber: (req, res) => {
+  create: (req, res, next) => {
     // create a new Subscriber object
-    let newSubscriber = new Subscriber({
+    let subscriberParams = {
       name: req.body.name,
       email: req.body.email,
       zipCode: req.body.zipCode
-    });
+    };
 
-    newSubscriber.save()
-      .then(result => {
-        console.log(`Saved new subscriber: \n${result}`)
-        res.render("subscribers/thanks");
+    Subscriber.create(subscriberParams)
+      .then(subscriber => {
+        res.locals.redirect = "/subscribers";
+        res.locals.subscriber = subscriber;
       })
       .catch(error => {
-        if (error) res.send(error);
+        console.log(`Error saving a new subscriber: ${error.message}`);
+        next(error);
       });
+  },
+  redirectView: (req, res, next) => {
+    let redirectPath = res.locals.redirect;
+    if (redirectPath) res.redirect(redirectPath);
+    else next();
+  },
+  show: (req, res, next) => {
+    // get subscriber id from request params
+    let subscriberId = req.params.id;
+    // query to find an subscriber by subscriberId
+    Subscriber.findById(subscriberId)
+      .then(subscriber => {
+        // console.log('found subscriber', subscriber);
+        res.locals.subscriber = subscriber;
+        next();
+      })
+      .catch(error => {
+        console.log(`Error fetching subscriber by ID: ${error.message}`);
+      });
+  },
+  showView: (req, res) => {
+    // console.log('show view')
+    // console.log(res.locals.subscriber)
+    res.render("subscribers/show"); // path to show.ejs
+  },
+  edit: (req, res, next) => {
+    let subscriberId = req.params.id;
+    // find a subscriber by subscriberId
+    Subscriber.findById(subscriberId)
+      .then(subscriber => {
+        // render the found subscribers' data on edit page
+        res.render("subscribers/edit", {
+          subscriber: subscriber
+        });
+      })
+      .catch(error => {
+        console.log(`Error fetching subscriber by ID: ${error.message}`);
+        next(error);
+      });
+  },
+  update: (req, res, next) => {
+    let subscriberId = req.params.id,
+      subscriberParams = {
+        name: req.body.name,
+        email: req.body.email,
+        zipCode: req.body.zipCode
+      };;
+    // find a subscriber and update the subscribers' data
+    Subscriber.findByIdAndUpdate(subscriberId, {
+        $set: subscriberParams
+      })
+      .then(subscriber => {
+        // console.log(`found subscriber: ${subscriber}`);
+        // add updated subscriber data to a local variable
+        res.locals.redirect = `/subscribers/${subscriberId}`;
+        res.locals.subscriber = subscriber;
+        // call middleware
+        next();
+      })
+      .catch(error => {
+        console.log(`Error updating subscriber by ID: ${error.message}`);
+        next(error);
+      })
+  },
+  delete: (req, res, next) => {
+    let subscriberId = req.params.id;
+    Subscriber.findByIdAndDelete(subscriberId)
+      .then(() => {
+        res.locals.redirect = "/subscribers";
+        next();
+      })
+      .catch(error => {
+        console.log(`Error deleting subscriber by ID: ${error.message}`);
+        next(error);
+      })
   }
 }
