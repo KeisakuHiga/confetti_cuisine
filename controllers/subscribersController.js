@@ -17,7 +17,7 @@ module.exports = {
   indexView: (req, res) => {
     res.render("subscribers/index");
   },
-  // rendering contact page
+  // rendering new page
   new: (req, res) => {
     res.render("subscribers/new")
   },
@@ -29,11 +29,12 @@ module.exports = {
       email: req.body.email,
       zipCode: req.body.zipCode
     };
-
+    // console.log(subscriberParams)
     Subscriber.create(subscriberParams)
       .then(subscriber => {
         res.locals.redirect = "/subscribers";
         res.locals.subscriber = subscriber;
+        next();
       })
       .catch(error => {
         console.log(`Error saving a new subscriber: ${error.message}`);
@@ -42,6 +43,7 @@ module.exports = {
   },
   redirectView: (req, res, next) => {
     let redirectPath = res.locals.redirect;
+    // console.log(redirectPath)
     if (redirectPath) res.redirect(redirectPath);
     else next();
   },
