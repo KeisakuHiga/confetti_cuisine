@@ -47,6 +47,14 @@ app.get('/', homeController.index);
 app.get('/courses', homeController.showCourses);
 app.get('/contact', subscribersController.getSubscriptionPage);
 app.get('/users', usersController.index, usersController.indexView);
+app.post('/subscribe', subscribersController.saveSubscriber);
+app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
+  // log subscribers data from request object
+  console.log(req.data);
+  res.render("subscribers", {
+    subscribers: req.data
+  });
+});
 router.get('/users/new', usersController.new);
 router.post('/users/create', usersController.create, usersController.redirectView);
 
