@@ -43,18 +43,19 @@ app.use(express.json());
 
 // make route
 app.use('/', router);
-app.get('/', homeController.index);
-app.get('/courses', homeController.showCourses);
-app.get('/contact', subscribersController.getSubscriptionPage);
-app.get('/users', usersController.index, usersController.indexView);
-app.post('/subscribe', subscribersController.saveSubscriber);
-app.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
+router.get('/', homeController.index);
+router.get('/courses', homeController.showCourses);
+router.get('/contact', subscribersController.getSubscriptionPage);
+router.post('/subscribe', subscribersController.saveSubscriber);
+router.get('/subscribers', subscribersController.getAllSubscribers, (req, res, next) => {
   // log subscribers data from request object
   console.log(req.data);
   res.render("subscribers", {
     subscribers: req.data
   });
 });
+router.get('/users', usersController.index, usersController.indexView);
+router.get('/users/:id', usersController.show, usersController.showView);
 router.get('/users/new', usersController.new);
 router.post('/users/create', usersController.create, usersController.redirectView);
 

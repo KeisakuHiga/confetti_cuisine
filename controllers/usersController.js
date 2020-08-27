@@ -46,5 +46,24 @@ module.exports = {
     let redirectPath = res.locals.redirect;
     if (redirectPath) res.redirect(redirectPath);
     else next();
+  },
+  show: (req, res, next) => {
+    // get user id from request params
+    let userId = req.params.id;
+    // query to find an user by userId
+    User.findById(userId)
+      .then(user => {
+        console.log('found user', user);
+        res.locals.user = user;
+        next();
+      })
+      .catch(error => {
+        console.log(`Error fetching user by ID: ${error.message}`);
+      });
+  },
+  showView: (req, res) => {
+    console.log('show view')
+    console.log(res.locals.user)
+    res.render("users/show"); // path to show.ejs
   }
 }
