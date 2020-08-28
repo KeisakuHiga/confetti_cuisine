@@ -1,8 +1,8 @@
 const mongoose = require('mongoose'),
   {
     Schema
-  } = mongoose;
-const Subscriber = require('./subscriber');
+  } = mongoose,
+  Subscriber = require('./subscriber');
 
 // create User schema
 const userSchema = new Schema({
@@ -19,7 +19,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
-    lowercase: true,
+    // lowercase: true,
     unique: true
   },
   zipCode: {

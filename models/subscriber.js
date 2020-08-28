@@ -1,8 +1,11 @@
 // load mongoose
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+  {
+    Schema
+  } = mongoose;
 
 // create a new schema of subscribers
-const subscriberSchema = mongoose.Schema({
+const subscriberSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -22,6 +25,8 @@ const subscriberSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course"
   }]
+}, {
+  timestamps: true
 });
 
 // add instance methods to subscriberSchema

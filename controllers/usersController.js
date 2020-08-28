@@ -1,4 +1,15 @@
-const User = require('../models/user');
+const User = require('../models/user'),
+  getUserParams = body => {
+    return {
+      name: {
+        first: body.first,
+        last: body.last
+      },
+      email: body.email,
+      password: body.password,
+      zipCode: body.zipCode
+    }
+  };
 
 module.exports = {
   index: (req, res, next) => {
@@ -21,15 +32,7 @@ module.exports = {
     res.render("users/new");
   },
   create: (req, res, next) => {
-    let userParams = {
-      name: {
-        first: req.body.first,
-        last: req.body.last
-      },
-      email: req.body.email,
-      password: req.body.password,
-      zipCode: req.body.zipCode
-    };
+    let userParams = getUserParams(req.body);
     // create a new user object by form params
     User.create(userParams)
       .then(user => {
@@ -83,15 +86,7 @@ module.exports = {
   },
   update: (req, res, next) => {
     let userId = req.params.id,
-      userParams = {
-        name: {
-          first: req.body.first,
-          last: req.body.last
-        },
-        email: req.body.email,
-        password: req.body.password,
-        zipCode: req.body.zipCode
-      };
+      userParams = getUserParams(req.body);
     // find a user and update the users' data
     User.findByIdAndUpdate(userId, {
         $set: userParams
@@ -108,10 +103,10 @@ module.exports = {
         console.log(`Error updating user by ID: ${error.message}`);
         next(error);
       })
-    },
-    delete: (req, res, next) => {
-      let userId = req.params.id;
-      User.findByIdAndDelete(userId)
+  },
+  delete: (req, res, next) => {
+    let userId = req.params.id;
+    User.findByIdAndDelete(userId)
       .then(() => {
         res.locals.redirect = "/users";
         next();
@@ -119,6 +114,6 @@ module.exports = {
       .catch(error => {
         console.log(`Error deleting user by ID: ${error.message}`);
         next(error);
-    })
+      })
   }
 }

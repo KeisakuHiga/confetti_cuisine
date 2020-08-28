@@ -1,6 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+  {
+    Schema
+  } = mongoose;
 
-const courseSchema = mongoose.Schema({
+const courseSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -10,7 +13,17 @@ const courseSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  items: [],
+  // items: [],
+  maxStudents: {
+    type: Number,
+    default: 0,
+    min: [0, "Course cannot have a negative number of students"]
+  },
+  cost: {
+    type: Number,
+    default: 0,
+    min: [0, "Course cannot have a negative cost"]
+  },
   zipCode: {
     type: Number,
     min: [1000000, 'Zip code too short'],
@@ -20,6 +33,8 @@ const courseSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subscriber"
   }]
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model("Course", courseSchema);
