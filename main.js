@@ -1,5 +1,6 @@
 const express = require('express'),
   methodOverride = require('method-override'),
+  layout = require('express-ejs-layouts'),
   app = express(),
   router = express.Router(),
   // homeController = require('./controllers/homeController'),
@@ -10,27 +11,26 @@ const express = require('express'),
 
 // load mongoose
 const mongoose = require('mongoose');
+const url = "mongodb://localhost:27017/recipe_db";
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+}
 
 // tell mongoose to use ES6's native Promise
 mongoose.Promise = global.Promise;
-mongoose.set('useFindAndModify', false);
 // set up db connection
-mongoose.connect(
-  "mongodb://localhost:27017/recipe_db", {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-  }
-);
+mongoose.connect(url, options);
 const db = mongoose.connection;
 db.once("open", () => {
   console.log("Successfully connected to MongoDB using mongoose!");
 });
 
 // load express-ejs-layouts, set the layout module to the app
-const layout = require('express-ejs-layouts');
 app.set('view engine', 'ejs');
 app.use(layout);
-
 app.set('port', process.env.PORT || 3000);
 app.use(express.static('public'));
 
