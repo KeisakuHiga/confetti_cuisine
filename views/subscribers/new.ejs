@@ -1,11 +1,12 @@
-<div>
-  <h1>Subscribe now!</h1>
+<h1>Subscribe now!</h1>
+<div class="data-form">
   <form action="/subscribers/create" method="post">
-    <label for="name">Name</label>
-    <input type="text" name="name">
-    <label for="email">Email</label>
-    <input type="email" name="email">
-    <input type="text" name="zipCode" placeholder="Zip Code" pattern="[0-9]{7}">
-    <input type="submit" value="Submit">
+    <label for="inputName">Name</label>
+    <input type="text" name="name" id="inputName" placeholder="Name" autofocus>
+    <label for="inputEmail">Email address</label>
+    <input type="email" name="email" id="inputEmail" placeholder="Email address" required>
+    <label for="inputZipCode">Zip Code</label>
+    <input type="text" name="zipCode" id="inputZipCode" placeholder="Zip Code" pattern="[0-9]{7}">
+    <button type="submit">Create</button>
   </form>
 </div>

@@ -2,7 +2,7 @@ const express = require('express'),
   methodOverride = require('method-override'),
   app = express(),
   router = express.Router(),
-  homeController = require('./controllers/homeController'),
+  // homeController = require('./controllers/homeController'),
   subscribersController = require('./controllers/subscribersController'),
   coursesController = require('./controllers/coursesController'),
   usersController = require('./controllers/usersController'),
@@ -13,7 +13,7 @@ const mongoose = require('mongoose');
 
 // tell mongoose to use ES6's native Promise
 mongoose.Promise = global.Promise;
-
+mongoose.set('useFindAndModify', false);
 // set up db connection
 mongoose.connect(
   "mongodb://localhost:27017/recipe_db", {
