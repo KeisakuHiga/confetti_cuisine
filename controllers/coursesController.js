@@ -32,13 +32,16 @@ module.exports = {
     // console.log(courseParams)
     Course.create(courseParams)
       .then(course => {
+        req.flash("success", `${course.title} has been added successfully`);
         res.locals.redirect = "/courses";
         res.locals.course = course;
         next();
       })
       .catch(error => {
         console.log(`Error saving a new course: ${error.message}`);
-        next(error);
+        res.locals.redirect = "/courses/new";
+        req.flash("error", `Failed to add a new course because: ${error.message}.`);
+        next();
       });
   },
   redirectView: (req, res, next) => {
@@ -95,6 +98,7 @@ module.exports = {
       .then(course => {
         // console.log(`found course: ${course}`);
         // add updated course data to a local variable
+        req.flash("updated", `${course.title} has been updated successfully`);
         res.locals.redirect = `/courses/${courseId}`;
         res.locals.course = course;
         // call middleware
@@ -102,19 +106,24 @@ module.exports = {
       })
       .catch(error => {
         console.log(`Error updating course by ID: ${error.message}`);
-        next(error);
+        res.locals.redirect = `/courses/${courseId}/edit`;
+        req.flash("error", `Failed to update the course because: ${error.message}.`);
+        next();
       })
   },
   delete: (req, res, next) => {
     let courseId = req.params.id;
     Course.findByIdAndDelete(courseId)
       .then(() => {
+        req.flash("deleted", `${courseId} has been deleted successfully`);
         res.locals.redirect = "/courses";
         next();
       })
       .catch(error => {
         console.log(`Error deleting course by ID: ${error.message}`);
-        next(error);
+        res.locals.redirect = "/courses";
+        req.flash("error", `Failed to delete the course because: ${error.message}`);
+        next();
       })
   }
 }

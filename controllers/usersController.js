@@ -98,6 +98,7 @@ module.exports = {
       .then(user => {
         // console.log(`found user: ${user}`);
         // add updated user data to a local variable
+        req.flash("updated", `${user.fullName}'s account updated successfully`);
         res.locals.redirect = `/users/${userId}`;
         res.locals.user = user;
         // call middleware
@@ -105,19 +106,24 @@ module.exports = {
       })
       .catch(error => {
         console.log(`Error updating user by ID: ${error.message}`);
-        next(error);
+        res.locals.redirect = `/users/${userId}/edit`;
+        req.flash("error", `Failed to update user account because: ${error.message}.`);
+        next();
       })
   },
   delete: (req, res, next) => {
     let userId = req.params.id;
     User.findByIdAndDelete(userId)
       .then(() => {
+        req.flash("deleted", `${userId} has been deleted successfully`);
         res.locals.redirect = "/users";
         next();
       })
       .catch(error => {
         console.log(`Error deleting user by ID: ${error.message}`);
-        next(error);
+        res.locals.redirect = "/users";
+        req.flash("error", `Failed to delete user account because: ${error.message}`);
+        next();
       })
   }
 }
