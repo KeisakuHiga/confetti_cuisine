@@ -16,6 +16,10 @@
     <% if (flashMessages) { %>
       <% if (flashMessages.success) { %>
         <div class="success"><%= flashMessages.success %> </div>
+      <% } else if (flashMessages.updated) { %>
+        <div class="updated"><%= flashMessages.updated %> </div>
+      <% } else if (flashMessages.deleted) { %>
+        <div class="deleted"><%= flashMessages.deleted %> </div>
       <% } else if (flashMessages.error) { %>
         <div class="error"><%= flashMessages.error %> </div>
       <% } %>
