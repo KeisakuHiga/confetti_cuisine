@@ -45,7 +45,7 @@ app.use(
 	}),
 );
 app.use(express.json());
-router.use(cookieParser('secret_passcode'));
+router.use(cookieParser('secret_passcode')); // this pass code is used for encrypting the cookie data 
 router.use(
 	expressSession({
 		secret: 'secret_passcode',
@@ -57,6 +57,11 @@ router.use(
 	}),
 );
 router.use(connectFlash());
+// put flash message into response' local variable
+router.use((req, res, next) => {
+  res.locals.flashMessage = req.flash();
+  next();
+});
 router.use(
 	methodOverride('_method', {
 		methods: ['POST', 'GET'],
