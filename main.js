@@ -38,11 +38,10 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.static('public'));
 
 // middleware
-app.use('/', router);
 app.use(
 	express.urlencoded({
 		extended: false,
-	}),
+	})
 );
 app.use(express.json());
 router.use(cookieParser('secret_passcode')); // this pass code is used for encrypting the cookie data 
@@ -50,24 +49,25 @@ router.use(
 	expressSession({
 		secret: 'secret_passcode',
 		cookie: {
-			maxAge: 4000000,
+			maxAge: 4000000
 		},
 		resave: false,
 		saveUninitialized: false,
-	}),
+	})
 );
 router.use(connectFlash());
 // put flash message into response' local variable
 router.use((req, res, next) => {
-  res.locals.flashMessage = req.flash();
-  next();
+	res.locals.flashMessages = req.flash();
+	next();
 });
 router.use(
 	methodOverride('_method', {
 		methods: ['POST', 'GET'],
-	}),
+	})
 );
 // courses routes
+app.use('/', router);
 router.get('/courses', coursesController.index, coursesController.indexView);
 router.get('/courses/new', coursesController.new);
 router.post(
