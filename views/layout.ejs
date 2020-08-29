@@ -11,6 +11,16 @@
   <header>
     <h1>HEADER</h1>
   </header>
+  <div class="flashes">
+    <%# show flash messages if any %>
+    <% if (flashMessages) { %>
+      <% if (flashMessages.success) { %>
+        <div class="success"><%= flashMessages.success %> </div>
+      <% } else if (flashMessages.error) { %>
+        <div class="error"><%= flashMessages.error %> </div>
+      <% } %>
+    <% } %>
+  </div>
   <%- body %>
   <footer>
     <h3>FOOTER</h3>
