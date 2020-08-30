@@ -127,7 +127,7 @@ module.exports = {
       })
   },
   login: (req, res) => {
-    res.render("/users/login");
+    res.render("users/login");
   },
   authenticate: (req, res, next) => {
     User.findOne({
@@ -136,8 +136,9 @@ module.exports = {
       .then(user => {
         if (user && user.password === req.body.password) {
           res.locals.redirect = `/users/${user.id}`;
-          req.flash("success", `${users.fullName}'s logged in successfully`);
+          req.flash("success", `${user.fullName}'s logged in successfully`);
           res.locals.user = user;
+          next();
         } else {
           req.flash("error",
             "Your account or password is incorrect" +
