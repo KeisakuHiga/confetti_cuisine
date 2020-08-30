@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'),
+  bcrypt = require('bcrypt'),
   {
     Schema
   } = mongoose,
@@ -49,7 +50,7 @@ userSchema.virtual("fullName")
     return `${this.name.first} ${this.name.last}`;
   });
 
-// set pre('save) hook
+// set pre('save') hook
 userSchema.pre('save', function (next) {
   let user = this;
   // check if there is a subscriber who has the same email address with a new user
@@ -71,4 +72,24 @@ userSchema.pre('save', function (next) {
     next();
   }
 });
+// set pre('save') hook for encrypt password
+userSchema.pre('save', function (next) {
+  let user = this;
+
+  // hashing password
+  bcrypt.hash(user.password, 10) // here '10' is salt. In cryptography, a salt is random data that is used as an additional input to a one-way function that hashes data, a password or passphrase.
+    .then(hash => {
+      user.password = hash;
+      next();
+    })
+    .catch(error => {
+      console.log(`Error in hashing password: ${error.message}`);
+      next(error);
+    });
+});
+// method to compare the two hash related to password
+userSchema.methods.passwordComparison = function (inputPassword) {
+  let user = this;
+  return bcrypt.compare(inputPassword, user.password); // returns Promise
+}
 module.exports = mongoose.model("User", userSchema);
