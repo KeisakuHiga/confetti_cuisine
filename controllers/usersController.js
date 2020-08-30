@@ -125,5 +125,31 @@ module.exports = {
         req.flash("error", `Failed to delete user account because: ${error.message}`);
         next();
       })
+  },
+  login: (req, res) => {
+    res.render("/users/login");
+  },
+  authenticate: (req, res, next) => {
+    User.findOne({
+        email: req.body.email
+      })
+      .then(user => {
+        if (user && user.password === req.body.password) {
+          res.locals.redirect = `/users/${user.id}`;
+          req.flash("success", `${users.fullName}'s logged in successfully`);
+          res.locals.user = user;
+        } else {
+          req.flash("error",
+            "Your account or password is incorrect" +
+            "Please tyr again or contact your system administrator"
+          );
+          res.locals.redirect = "/users/login";
+          next();
+        }
+      })
+      .catch(error => {
+        console.log(`Error logging in user: ${error.message}`);
+        next(error);
+      });
   }
 }
