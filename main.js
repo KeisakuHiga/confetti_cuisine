@@ -130,7 +130,7 @@ router.post(
 router.get('/users/login', usersController.login);
 router.post(
 	'/users/login',
-	usersController.validate,
+	usersController.authenticate,
 	usersController.redirectView,
 );
 router.get('/users/:id', usersController.show, usersController.showView);
