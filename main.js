@@ -4,6 +4,8 @@ const express = require('express'),
 	expressSession = require('express-session'),
 	cookieParser = require('cookie-parser'),
 	connectFlash = require('connect-flash'),
+	expressValidator = require('express-validator'),
+	{ check, sanitizeBody, getValidationResult } = expressValidator,
 	app = express(),
 	router = express.Router(),
 	// homeController = require('./controllers/homeController'),
@@ -41,19 +43,19 @@ app.use(express.static('public'));
 app.use(
 	express.urlencoded({
 		extended: false,
-	})
+	}),
 );
 app.use(express.json());
-router.use(cookieParser('secret_passcode')); // this pass code is used for encrypting the cookie data 
+router.use(cookieParser('secret_passcode')); // this pass code is used for encrypting the cookie data
 router.use(
 	expressSession({
 		secret: 'secret_passcode',
 		cookie: {
-			maxAge: 4000000
+			maxAge: 4000000,
 		},
 		resave: false,
 		saveUninitialized: false,
-	})
+	}),
 );
 router.use(connectFlash());
 // put flash message into response' local variable
@@ -64,7 +66,7 @@ router.use((req, res, next) => {
 router.use(
 	methodOverride('_method', {
 		methods: ['POST', 'GET'],
-	})
+	}),
 );
 // courses routes
 app.use('/', router);
@@ -120,15 +122,17 @@ router.get('/users', usersController.index, usersController.indexView);
 router.get('/users/new', usersController.new);
 router.post(
 	'/users/create',
+	usersController.validate,
+	usersController.getValidationResult,
 	usersController.create,
 	usersController.redirectView,
 );
 router.get('/users/login', usersController.login);
 router.post(
 	'/users/login',
-	usersController.authenticate,
-	usersController.redirectView
-)
+	usersController.validate,
+	usersController.redirectView,
+);
 router.get('/users/:id', usersController.show, usersController.showView);
 router.get('/users/:id/edit', usersController.edit);
 router.put(
