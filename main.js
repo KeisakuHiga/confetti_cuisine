@@ -7,7 +7,7 @@ const express = require('express'),
 	passport = require('passport'),
 	app = express(),
 	router = express.Router(),
-	// homeController = require('./controllers/homeController'),
+	homeController = require('./controllers/homeController'),
 	subscribersController = require('./controllers/subscribersController'),
 	coursesController = require('./controllers/coursesController'),
 	usersController = require('./controllers/usersController'),
@@ -80,6 +80,7 @@ passport.deserializeUser(User.deserializeUser());
 
 // courses routes
 app.use('/', router);
+router.get('/', homeController.index);
 router.get('/courses', coursesController.index, coursesController.indexView);
 router.get('/courses/new', coursesController.new);
 router.post(
@@ -138,11 +139,7 @@ router.post(
 	usersController.redirectView,
 );
 router.get('/users/login', usersController.login);
-router.post(
-	'/users/login',
-	usersController.authenticate,
-	usersController.redirectView,
-);
+router.post('/users/login', usersController.authenticate);
 router.get('/users/:id', usersController.show, usersController.showView);
 router.get('/users/:id/edit', usersController.edit);
 router.put(
