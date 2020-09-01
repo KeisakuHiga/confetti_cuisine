@@ -3,7 +3,8 @@ const mongoose = require('mongoose'),
   {
     Schema
   } = mongoose,
-  Subscriber = require('./subscriber');
+  Subscriber = require('./subscriber'),
+  passportLocalMongoose = require('passport-local-mongoose');
 
 // create User schema
 const userSchema = new Schema({
@@ -28,10 +29,11 @@ const userSchema = new Schema({
     min: [1000000, 'Zip code too short'],
     max: 9999999
   },
-  password: {
-    type: String,
-    required: true
-  },
+  // you don't need password property because of Passport.js: Line 97
+  // password: {
+  //   type: String,
+  //   required: true
+  // },
   courses: [{
     type: Schema.Types.ObjectId,
     ref: "Course"
@@ -91,5 +93,10 @@ userSchema.pre('save', function (next) {
 userSchema.methods.passwordComparison = function (inputPassword) {
   let user = this;
   return bcrypt.compare(inputPassword, user.password); // returns Promise
-}
+};
+// adding passport-local-mongoose plugin
+userSchema.plugin(passportLocalMongoose, {
+  usernameField: "email"
+});
+
 module.exports = mongoose.model("User", userSchema);
