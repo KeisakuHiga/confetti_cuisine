@@ -4,15 +4,15 @@ const express = require('express'),
 	expressSession = require('express-session'),
 	cookieParser = require('cookie-parser'),
 	connectFlash = require('connect-flash'),
-	expressValidator = require('express-validator'),
-	{ check, sanitizeBody, getValidationResult } = expressValidator,
+	passport = require('passport'),
 	app = express(),
 	router = express.Router(),
 	// homeController = require('./controllers/homeController'),
 	subscribersController = require('./controllers/subscribersController'),
 	coursesController = require('./controllers/coursesController'),
 	usersController = require('./controllers/usersController'),
-	errorController = require('./controllers/errorController');
+	errorController = require('./controllers/errorController'),
+	User = require('./models/user');
 
 // load mongoose
 const mongoose = require('mongoose');
@@ -68,6 +68,16 @@ router.use(
 		methods: ['POST', 'GET'],
 	}),
 );
+// setting for Passport.js
+router.use(passport.initialize());
+router.use(passport.session());
+
+// set login strategy
+passport.use(User.createStrategy());
+// setting for serialize/deserialize user data
+passport.serializeUser(User.serializeUser()); // what is serialize? https://pisuke-code.com/js-simplest-way-of-serialization/
+passport.deserializeUser(User.deserializeUser());
+
 // courses routes
 app.use('/', router);
 router.get('/courses', coursesController.index, coursesController.indexView);
