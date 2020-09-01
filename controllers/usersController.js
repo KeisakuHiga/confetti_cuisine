@@ -1,6 +1,10 @@
 const User = require('../models/user'),
 	expressValidator = require('express-validator'),
-	{ check, sanitizeBody, validationResult } = expressValidator,
+	{
+		check,
+		sanitizeBody,
+		validationResult
+	} = expressValidator,
 	getUserParams = (body) => {
 		return {
 			name: {
@@ -35,32 +39,24 @@ module.exports = {
 	},
 	create: (req, res, next) => {
 		// console.log('first line in create action: ', req.skip);
-    if (req.skip) {
-      next();
+		if (req.skip) {
+			next();
 		} else {
-			let userParams = getUserParams(req.body);
-			// create a new user object by form params
-			// console.log('didnt skip');
-			User.create(userParams)
-				.then((user) => {
-					// response with successful flash message
-					req.flash(
-						'success',
-						`${user.fullName}'s account created successfully`,
-					);
-					res.locals.redirect = '/users';
-					res.locals.user = user;
+			let newUser = getUserParams(req.body);
+			// register new user
+			User.register(newUser, req.body.password, (error, user) => {
+				if (user) {
+					req.flash("success",
+						`${user.fullName}'s account created successfully!`);
+					res.locals.redirect = "/users";
 					next();
-				})
-				.catch((error) => {
-					console.log(`Error saving a new user: ${error.message}`);
-					res.locals.redirect = '/users/new';
-					req.flash(
-						'error',
-						`Failed to create user account because: ${error.message}.`,
-					);
+				} else {
+					req.flash("error",
+						`Failed to create user account because: ${error.message}`);
+					res.locals.redirect = "/users/new";
 					next();
-				});
+				}
+			});
 		}
 	},
 	redirectView: (req, res, next) => {
@@ -108,8 +104,8 @@ module.exports = {
 			userParams = getUserParams(req.body);
 		// find a user and update the users' data
 		User.findByIdAndUpdate(userId, {
-			$set: userParams,
-		})
+				$set: userParams,
+			})
 			.then((user) => {
 				// console.log(`found user: ${user}`);
 				// add updated user data to a local variable
@@ -152,8 +148,8 @@ module.exports = {
 	},
 	authenticate: (req, res, next) => {
 		User.findOne({
-			email: req.body.email,
-		})
+				email: req.body.email,
+			})
 			.then((user) => {
 				if (user) {
 					user.passwordComparison(req.body.password).then((passwordMatch) => {
@@ -186,11 +182,11 @@ module.exports = {
 	},
 	validate: [
 		sanitizeBody('email')
-			.normalizeEmail({
-				// change email characters to lowercase and trim unnecessary space
-				all_lowercase: true,
-			})
-			.trim(),
+		.normalizeEmail({
+			// change email characters to lowercase and trim unnecessary space
+			all_lowercase: true,
+		})
+		.trim(),
 		check('email', 'Email is invalid').isEmail(),
 		// check zipCode field
 		check('zipCode', 'Zip code is invalid').notEmpty().isInt().isLength({
