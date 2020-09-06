@@ -16,9 +16,17 @@ const User = require('../models/user'),
 			password: body.password,
 			zipCode: body.zipCode,
 		};
-	};
+	},
+	token = process.env.TOKEN || "recipeT0k3n";
 
 module.exports = {
+	verifyToken: (req, res, next) => {
+		if (req.query.apiToken === token) {
+			next();
+		} else {
+			next(new Error("Invalid API Token."));
+		}
+	},
 	index: (req, res, next) => {
 		User.find({})
 			.then((users) => {

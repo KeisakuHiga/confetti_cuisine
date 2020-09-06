@@ -32,6 +32,7 @@ db.once('open', () => {
 // load express-ejs-layouts, set the layout module to the app
 app.set('view engine', 'ejs');
 app.set('port', process.env.PORT || 3000);
+app.set('token', process.env.TOKEN || "recipeT0k3n");
 
 app.use(layout);
 app.use(express.static('public'));
