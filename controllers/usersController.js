@@ -185,4 +185,10 @@ module.exports = {
 			next(); // there is no error
 		}
 	},
+	logout: (req, res, next) => {
+		req.logout()
+		req.flash("success", "You have been logged out!");
+		res.locals.redirect = "/";
+		next();
+	}
 };

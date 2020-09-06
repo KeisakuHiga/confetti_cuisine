@@ -79,8 +79,8 @@ router.use((req, res, next) => {
 	// setting passport login status
 	res.locals.loggedIn = req.isAuthenticated();
 	res.locals.currentUser = req.user;
-	// console.log(res.locals.loggedIn)
-	// console.log(res.locals.currentUser)
+	console.log('login?: ', res.locals.loggedIn)
+	console.log('current user: ', res.locals.currentUser)
 	next();
 });
 // courses routes
@@ -144,6 +144,7 @@ router.post(
 );
 router.get('/users/login', usersController.login);
 router.post('/users/login', usersController.authenticate);
+router.get('/users/logout', usersController.logout, usersController.redirectView); // HTTP request should be GET !!
 router.get('/users/:id', usersController.show, usersController.showView);
 router.get('/users/:id/edit', usersController.edit);
 router.put(
