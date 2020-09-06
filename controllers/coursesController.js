@@ -1,4 +1,5 @@
-const Course = require('../models/course');
+const Course = require('../models/course'),
+  httpStatus = require('http-status-codes');
 
 module.exports = {
   // get all courses data 
@@ -131,5 +132,26 @@ module.exports = {
         req.flash("error", `Failed to delete the course because: ${error.message}`);
         next();
       })
+  },
+  respondJSON: (req, res) => {
+    res.json({
+      status: httpStatus.OK,
+      data: res.locals
+    });
+  },
+  errorJSON: (error, req, res, next) => {
+    let errorObject;
+    if (error) {
+      errorObject = {
+        status: httpStatus.INTERNAL_SERVER_ERROR,
+        data: error.message
+      }
+    } else {
+      errorObject = {
+        status: httpStatus.INTERNAL_SERVER_ERROR,
+        data: 'Unknown Error'
+      };
+    }
+    res.json(errorObject);
   }
 }
