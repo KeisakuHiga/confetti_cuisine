@@ -5,6 +5,7 @@ const express = require('express'),
 	cookieParser = require('cookie-parser'),
 	connectFlash = require('connect-flash'),
 	passport = require('passport'),
+	parser = require('tld-extract'),
 	app = express(),
 	router = express.Router(),
 	homeController = require('./controllers/homeController'),
@@ -79,8 +80,17 @@ router.use((req, res, next) => {
 	// setting passport login status
 	res.locals.loggedIn = req.isAuthenticated();
 	res.locals.currentUser = req.user;
-	console.log('login?: ', res.locals.loggedIn)
-	console.log('current user: ', res.locals.currentUser)
+	console.log('login?: ', res.locals.loggedIn);
+	console.log('current user: ', res.locals.currentUser);
+	if (req.isAuthenticated()) {
+		const email = res.locals.currentUser.email;
+		const address = email.split('@').pop();
+		const host = parser.parse_host(address);
+		console.log('tld: ', host.tld);
+		console.log('domain: ', host.domain);
+		console.log('sub: ', host.sub);
+	}
+
 	next();
 });
 // courses routes
