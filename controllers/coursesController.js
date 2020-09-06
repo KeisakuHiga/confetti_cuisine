@@ -1,4 +1,5 @@
 const Course = require('../models/course'),
+  User = require('../models/user'),
   httpStatus = require('http-status-codes');
 
 module.exports = {
@@ -153,5 +154,42 @@ module.exports = {
       };
     }
     res.json(errorObject);
+  },
+  join: (req, res, next) => {
+    let courseId = req.params.id,
+      currentUser = req.user;
+    if (currentUser) {
+      User.findByIdAndUpdate(currentUser, {
+          $addToSet: {
+            courses: courseId
+          }
+        })
+        .then(() => {
+          res.locals.success = true;
+          next();
+        })
+        .catch(error => {
+          next(error);
+        });
+    } else {
+      next(new Error("User must log in."));
+    }
+  },
+  filterUserCourses: (req, res, next) => {
+    let currentUser = res.locals.currentUser;
+    if (currentUser) {
+      let mappedCourses = res.locals.courses.map(course => {
+        let userJoined = currentUser.courses.some(userCourse => {
+          return userCourse.equals(course._id);
+        });
+        return Object.assign(course.toObject(), {
+          joined: userJoined
+        });
+      });
+      res.locals.courses = mappedCourses;
+      next();
+    } else {
+      next()
+    }
   }
 }

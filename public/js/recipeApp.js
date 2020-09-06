@@ -11,7 +11,7 @@ $(document).ready(() => {
             `<div>
               <span class="course-title">${course.title}</span>
               <div class="course-description">${course.description}</div>
-              <button class="join-button" data-id="${course._id}">Join</button>
+              <button class='button ${course.joined ? "joined-button" : "join-button"}' data-id="${course._id}">${course.joined ? "Joined" : "Join"}</button>
             </div>`
           );
         });
@@ -29,6 +29,7 @@ let addJoinButtonListener = () => {
     let $button = $(event.target),
       // get course id data
       courseId = $button.data("id");
+    console.log("courseId", courseId);
     // Ajax request with course id you want to join
     $.get(`/api/courses/${courseId}/join`, (results = {}) => {
       let data = results.data;
