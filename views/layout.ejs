@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <link rel="shortcut icon" type="image/png" href="/images/icon.png" />
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/recipeApp.js"></script>
   <link rel="stylesheet" href="/css/bootstrap.css">
   <link rel="stylesheet" href="/css/recipe_app.css">
 </head>
@@ -14,13 +17,13 @@
   <header>
     <div class="login-status">
       <% if (loggedIn) { %>
-        <div class="bubble logged-in">
-          Logged in as <a href="<%= `/users/${currentUser._id}` %> ">
-            <%= currentUser.fullName %></a>
-        </div>
-        <div class="log-out">
-          <a href="/users/logout">Log out</a>
-        </div>
+      <div class="bubble logged-in">
+        Logged in as <a href="<%= `/users/${currentUser._id}` %> ">
+          <%= currentUser.fullName %></a>
+      </div>
+      <div class="log-out">
+        <a href="/users/logout">Log out</a>
+      </div>
       <% } else { %>
       <a href="/users/login">Log In</a>
       <% } %>
@@ -39,6 +42,7 @@
         <a href="/contact">
           <span class="button">Contact</span>
         </a>
+        <li><%- include('courses/_coursesModal.ejs') %> </li>
       </div>
     </div>
   </header>
@@ -57,6 +61,7 @@
     <% } %>
   </div>
   <%- body %>
+
   <footer>
     <h3>FOOTER</h3>
   </footer>
