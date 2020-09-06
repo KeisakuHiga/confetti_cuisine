@@ -5,32 +5,55 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="shortcut icon" type="image/png" href="/images/icon.png" />
+  <link rel="stylesheet" href="/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/recipe_app.css">
 </head>
 
 <body>
   <header>
-    <h1>HEADER</h1>
-    test: <%= loggedIn %> 
-    <% if (loggedIn) { %> 
-      Logged in as <a href="<%= `/users/${currentUser._id}` %> ">
-        <%= currentUser.fullName %></a>
-        <a href="/users/logout">Log out</a>
-    <% } else { %> 
+    <div class="login-status">
+      <% if (loggedIn) { %>
+        <div class="bubble logged-in">
+          Logged in as <a href="<%= `/users/${currentUser._id}` %> ">
+            <%= currentUser.fullName %></a>
+        </div>
+        <div class="log-out">
+          <a href="/users/logout">Log out</a>
+        </div>
+      <% } else { %>
       <a href="/users/login">Log In</a>
-    <% } %> 
+      <% } %>
+    </div>
+    <div class="nav">
+      <div class="col-sm nav-align">
+        <h1 id="title">Recipe App</h1>
+      </div>
+      <div class="col-sm nav-align">
+        <a href="/">
+          <span class="button">Home</span>
+        </a>
+        <a href="/courses">
+          <span class="button">Cooking Courses</span>
+        </a>
+        <a href="/contact">
+          <span class="button">Contact</span>
+        </a>
+      </div>
+    </div>
   </header>
   <div class="flashes">
     <%# show flash messages if any %>
     <% if (flashMessages) { %>
-      <% if (flashMessages.success) { %>
-        <div class="success"><%= flashMessages.success %> </div>
-      <% } else if (flashMessages.updated) { %>
-        <div class="updated"><%= flashMessages.updated %> </div>
-      <% } else if (flashMessages.deleted) { %>
-        <div class="deleted"><%= flashMessages.deleted %> </div>
-      <% } else if (flashMessages.error) { %>
-        <div class="error"><%= flashMessages.error %> </div>
-      <% } %>
+    <% if (flashMessages.success) { %>
+    <div class="success"><%= flashMessages.success %> </div>
+    <% } else if (flashMessages.updated) { %>
+    <div class="updated"><%= flashMessages.updated %> </div>
+    <% } else if (flashMessages.deleted) { %>
+    <div class="deleted"><%= flashMessages.deleted %> </div>
+    <% } else if (flashMessages.error) { %>
+    <div class="error"><%= flashMessages.error %> </div>
+    <% } %>
     <% } %>
   </div>
   <%- body %>

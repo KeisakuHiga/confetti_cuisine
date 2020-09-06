@@ -86,9 +86,9 @@ router.use((req, res, next) => {
 		const email = res.locals.currentUser.email;
 		const address = email.split('@').pop();
 		const host = parser.parse_host(address);
-		console.log('tld: ', host.tld);
+		// console.log('tld: ', host.tld);
 		console.log('domain: ', host.domain);
-		console.log('sub: ', host.sub);
+		// console.log('sub: ', host.sub);
 	}
 
 	next();
