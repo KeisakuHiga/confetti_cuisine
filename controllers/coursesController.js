@@ -14,7 +14,13 @@ module.exports = {
       });
   },
   indexView: (req, res) => {
-    res.render("courses/index");
+    if (req.query.format === "json") {
+      // response by json
+      res.json(res.locals.courses);
+    } else {
+      // response by ejs
+      res.render("courses/index");
+    }
   },
   // rendering new page
   new: (req, res) => {
