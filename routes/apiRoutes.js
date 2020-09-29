@@ -3,6 +3,7 @@ const router = require('express').Router(),
   usersController = require('../controllers/usersController');
 
 router.post('/login', usersController.apiAuthenticate);
+router.use(usersController.verifyJWT);
 router.use(usersController.verifyToken);
 router.get(
   '/courses',

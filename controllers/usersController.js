@@ -1,7 +1,11 @@
 const User = require('../models/user'),
 	passport = require('passport'),
 	expressValidator = require('express-validator'),
-	{ check, sanitizeBody, validationResult } = expressValidator,
+	{
+		check,
+		sanitizeBody,
+		validationResult
+	} = expressValidator,
 	getUserParams = (body) => {
 		return {
 			name: {
@@ -14,7 +18,8 @@ const User = require('../models/user'),
 		};
 	},
 	token = process.env.TOKEN || 'recipeT0k3n',
-	jsonWebToken = require('jsonwebtoken');
+	jsonWebToken = require('jsonwebtoken'),
+	httpStatus = require('http-status-codes');
 
 module.exports = {
 	verifyToken: (req, res, next) => {
@@ -23,8 +28,8 @@ module.exports = {
 		if (token) {
 			// check if there is an user whose apiToken is match with token
 			User.findOne({
-				apiToken: token,
-			})
+					apiToken: token,
+				})
 				.then((user) => {
 					if (user) {
 						next();
@@ -45,8 +50,7 @@ module.exports = {
 		passport.authenticate('local', (errors, user) => {
 			if (user) {
 				// put signature JWT if there is an user matching with the email and password
-				let signedToken = jsonWebToken.sign(
-					{
+				let signedToken = jsonWebToken.sign({
 						data: user._id,
 						expiration: new Date().setDate(new Date().getDate() + 1)
 					},
@@ -65,6 +69,47 @@ module.exports = {
 				});
 			}
 		})(req, res, next);
+	},
+	verifyJWT: (req, res, next) => {
+		let token = req.headers.token;
+		if (token) {
+			jsonWebToken.verify(
+				token,
+				"secret_encoding_passphrase",
+				(errors, payload) => {
+					if (payload) {
+						User.findById(payload.data)
+							.then(user => {
+								if (user) {
+									next();
+								} else {
+									res
+										.status(httpStatus.FORBIDDEN)
+										.json({
+											error: true,
+											message: "No User account found."
+										})
+								}
+							})
+					} else {
+						res
+							.status(httpStatus.UNAUTHORIZED)
+							.json({
+								error: true,
+								message: "Cannot verify API token."
+							});
+						next();
+					}
+				}
+			)
+		} else {
+			res
+				.status(httpStatus.UNAUTHORIZED)
+				.json({
+					error: true,
+					message: "Provide Token."
+				});
+		}
 	},
 	index: (req, res, next) => {
 		User.find({})
@@ -156,8 +201,8 @@ module.exports = {
 			userParams = getUserParams(req.body);
 		// find a user and update the users' data
 		User.findByIdAndUpdate(userId, {
-			$set: userParams,
-		})
+				$set: userParams,
+			})
 			.then((user) => {
 				// console.log(`found user: ${user}`);
 				// add updated user data to a local variable
@@ -206,11 +251,11 @@ module.exports = {
 	}),
 	validate: [
 		sanitizeBody('email')
-			.normalizeEmail({
-				// change email characters to lowercase and trim unnecessary space
-				all_lowercase: true,
-			})
-			.trim(),
+		.normalizeEmail({
+			// change email characters to lowercase and trim unnecessary space
+			all_lowercase: true,
+		})
+		.trim(),
 		check('email', 'Email is invalid').isEmail(),
 		// check zipCode field
 		check('zipCode', 'Zip code is invalid').notEmpty().isInt().isLength({
