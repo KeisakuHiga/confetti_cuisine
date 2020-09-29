@@ -4,7 +4,8 @@ const mongoose = require('mongoose'),
     Schema
   } = mongoose,
   Subscriber = require('./subscriber'),
-  passportLocalMongoose = require('passport-local-mongoose');
+  passportLocalMongoose = require('passport-local-mongoose'),
+  randToken = require('rand-token');
 
 // create User schema
 const userSchema = new Schema({
@@ -41,6 +42,10 @@ const userSchema = new Schema({
   subscribedAccount: {
     type: Schema.Types.ObjectId,
     ref: "Subscriber"
+  },
+  apiToken: {
+    type: String,
+    unique: true
   }
 }, {
   timestamps: true
@@ -94,6 +99,16 @@ userSchema.pre('save', function (next) {
 //   let user = this;
 //   return bcrypt.compare(inputPassword, user.password); // returns Promise
 // };
+
+// // set pre('save') hook
+userSchema.pre("save", function (next) {
+  let user = this;
+  // check if apiToken has been set or create a new one
+  if (!user.apiToken) {
+    user.apiToken = randToken.generate(16);
+    next();
+  }
+});
 // adding passport-local-mongoose plugin
 userSchema.plugin(passportLocalMongoose, {
   usernameField: "email"
