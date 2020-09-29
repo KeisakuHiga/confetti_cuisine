@@ -64,7 +64,7 @@ module.exports = {
 					message: "Could not authenticate user."
 				});
 			}
-		});
+		})(req, res, next);
 	},
 	index: (req, res, next) => {
 		User.find({})
