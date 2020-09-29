@@ -1,11 +1,7 @@
 const User = require('../models/user'),
 	passport = require('passport'),
 	expressValidator = require('express-validator'),
-	{
-		check,
-		sanitizeBody,
-		validationResult
-	} = expressValidator,
+	{ check, sanitizeBody, validationResult } = expressValidator,
 	getUserParams = (body) => {
 		return {
 			name: {
@@ -17,7 +13,8 @@ const User = require('../models/user'),
 			zipCode: body.zipCode,
 		};
 	},
-	token = process.env.TOKEN || "recipeT0k3n";
+	token = process.env.TOKEN || 'recipeT0k3n',
+	jsonWebToken = require('jsonwebtoken');
 
 module.exports = {
 	verifyToken: (req, res, next) => {
@@ -26,22 +23,48 @@ module.exports = {
 		if (token) {
 			// check if there is an user whose apiToken is match with token
 			User.findOne({
-					apiToken: token
-				})
-				.then(user => {
+				apiToken: token,
+			})
+				.then((user) => {
 					if (user) {
 						next();
 					} else {
-						next(new Error("Invalid API token."));
+						next(new Error('Invalid API token.'));
 					}
 				})
-				.catch(error => {
+				.catch((error) => {
 					next(new Error(error.message));
-				})
+				});
 			next();
 		} else {
-			next(new Error("Invalid API Token."));
+			next(new Error('Invalid API Token.'));
 		}
+	},
+	apiAuthenticate: (req, res, next) => {
+		// use passport authenticate method for user authentication
+		passport.authenticate('local', (errors, user) => {
+			if (user) {
+				// put signature JWT if there is an user matching with the email and password
+				let signedToken = jsonWebToken.sign(
+					{
+						data: user._id,
+						expiration: new Date().setDate(new Date().getDate() + 1)
+					},
+					"secret_encoding_passphrase"
+				);
+				// response with JWT
+				res.json({
+					success: true,
+					token: signedToken
+				});
+			} else {
+				// response with error message
+				res.json({
+					success: false,
+					message: "Could not authenticate user."
+				});
+			}
+		});
 	},
 	index: (req, res, next) => {
 		User.find({})
@@ -71,14 +94,18 @@ module.exports = {
 			// register new user
 			User.register(newUser, req.body.password, (error, user) => {
 				if (user) {
-					req.flash("success",
-						`${user.fullName}'s account created successfully!`);
-					res.locals.redirect = "/users";
+					req.flash(
+						'success',
+						`${user.fullName}'s account created successfully!`,
+					);
+					res.locals.redirect = '/users';
 					next();
 				} else {
-					req.flash("error",
-						`Failed to create user account because: ${error.message}`);
-					res.locals.redirect = "/users/new";
+					req.flash(
+						'error',
+						`Failed to create user account because: ${error.message}`,
+					);
+					res.locals.redirect = '/users/new';
 					next();
 				}
 			});
@@ -129,8 +156,8 @@ module.exports = {
 			userParams = getUserParams(req.body);
 		// find a user and update the users' data
 		User.findByIdAndUpdate(userId, {
-				$set: userParams,
-			})
+			$set: userParams,
+		})
 			.then((user) => {
 				// console.log(`found user: ${user}`);
 				// add updated user data to a local variable
@@ -171,19 +198,19 @@ module.exports = {
 	login: (req, res) => {
 		res.render('users/login');
 	},
-	authenticate: passport.authenticate("local", {
-		failureRedirect: "/users/login",
-		failureFlash: "Failed to login",
-		successRedirect: "/",
-		successFlash: "Logged in!"
+	authenticate: passport.authenticate('local', {
+		failureRedirect: '/users/login',
+		failureFlash: 'Failed to login',
+		successRedirect: '/',
+		successFlash: 'Logged in!',
 	}),
 	validate: [
 		sanitizeBody('email')
-		.normalizeEmail({
-			// change email characters to lowercase and trim unnecessary space
-			all_lowercase: true,
-		})
-		.trim(),
+			.normalizeEmail({
+				// change email characters to lowercase and trim unnecessary space
+				all_lowercase: true,
+			})
+			.trim(),
 		check('email', 'Email is invalid').isEmail(),
 		// check zipCode field
 		check('zipCode', 'Zip code is invalid').notEmpty().isInt().isLength({
@@ -210,9 +237,9 @@ module.exports = {
 		}
 	},
 	logout: (req, res, next) => {
-		req.logout()
-		req.flash("success", "You have been logged out!");
-		res.locals.redirect = "/";
+		req.logout();
+		req.flash('success', 'You have been logged out!');
+		res.locals.redirect = '/';
 		next();
-	}
+	},
 };
