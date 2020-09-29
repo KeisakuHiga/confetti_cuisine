@@ -21,7 +21,23 @@ const User = require('../models/user'),
 
 module.exports = {
 	verifyToken: (req, res, next) => {
-		if (req.query.apiToken === token) {
+		let token = req.query.apiToken;
+		// check if there is an apiToken provided by query params
+		if (token) {
+			// check if there is an user whose apiToken is match with token
+			User.findOne({
+					apiToken: token
+				})
+				.then(user => {
+					if (user) {
+						next();
+					} else {
+						next(new Error("Invalid API token."));
+					}
+				})
+				.catch(error => {
+					next(new Error(error.message));
+				})
 			next();
 		} else {
 			next(new Error("Invalid API Token."));
